@@ -1,28 +1,54 @@
 from trac.core import *
-from trac.util.html import html
-from trac.web import IRequestHandler
-from trac.web.chrome import INavigationContributor
+from trac.admin import IAdminCommandProvider
+from trac.util.text import print_table, printout
 
 
-class HelloWorldPlugin(Component):
-    implements(INavigationContributor, IRequestHandler)
+class DigestReportSender(Component):
+    implements(IAdminCommandProvider)
 
-    # INavigationContributor methods
-    def get_active_navigation_item(self, req):
-        return 'helloworld'
+    # IAdminCommandProvider methods
 
-    def get_navigation_items(self, req):
-        yield ('mainnav', 'helloworld',
-               html.A('Hello world', href=req.href.helloworld()))
+    greetings = ['hi', 'hello', 'salut', 'hola', 'ciao']
 
-    # IRequestHandler methods
-    def match_request(self, req):
-        return req.path_info == '/helloworld'
+    def get_admin_commands(self):
+        yield ('digest info', '',
+               'show digest status information',
+               None, self._display_status)
+        yield ('digest send', '',
+               'Sends digest reports to configured emails',
+               None, self._send_digest_reports)
 
-    def process_request(self, req):
-        content = 'Hello World!'
-        req.send_response(200)
-        req.send_header('Content-Type', 'text/plain')
-        req.send_header('Content-Length', len(content))
-        req.end_headers()
-        req.write(content)
+    def _display_status(self):
+        print "Env is " + self.env
+        print_table([self.greetings])
+
+    def _complete_greeting(self, args):
+        return self.greetings
+
+    def _send_digest_reports(self):
+        printout(self.greetings)
+
+
+
+class Report(object):
+
+    def __init__(self):
+        self._tickets = []
+
+    @property
+    def tickets(self):
+        return self._tickets
+
+    def add_ticket(self, ticket):
+        self._tickets.append(ticket)
+
+
+class ReportBuilder(object):
+    def add(self, ticket):
+        pass
+
+    def get_report(self):
+        return Report()
+
+    def set_data_source(self, data_source):
+        self._data_source = data_source
