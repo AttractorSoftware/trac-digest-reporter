@@ -48,6 +48,8 @@ class ReportBuilder(object):
         pass
 
     def get_report(self):
+        last_run_time = self._data_source.get_last_run_time()
+        ticket_changes = self._data_source.get_ticket_changes(last_run_time, self._start_time)
         return Report()
 
     def set_data_source(self, data_source):
