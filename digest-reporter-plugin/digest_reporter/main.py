@@ -52,3 +52,6 @@ class ReportBuilder(object):
 
     def set_data_source(self, data_source):
         self._data_source = data_source
+
+    def set_start_time(self, start_time):
+        self._start_time = start_time
