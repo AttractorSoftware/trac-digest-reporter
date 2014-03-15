@@ -1,0 +1,5 @@
+.env/
+*.egg-info/
+*.py[cod]
+tracdeveloperplugin/
+test-env/
