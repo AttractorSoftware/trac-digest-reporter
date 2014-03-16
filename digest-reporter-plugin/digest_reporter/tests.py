@@ -19,6 +19,8 @@ class TestReportBuilder(unittest.TestCase):
         self.data_source = Mock(
             get_last_run_time=lambda: self.get_last_run_time,
         )
+        self.data_source.get_ticket_changes = MagicMock(return_value=[])
+        self.data_source.get_tickets = MagicMock(return_value=[])
         self.report_builder = ReportBuilder()
         self.report_builder.set_data_source(self.data_source)
         self.report_builder.set_start_time(self._start_time)
@@ -37,7 +39,7 @@ class TestReportBuilder(unittest.TestCase):
         self.data_source.get_tickets = MagicMock(return_value=[ticket23, ticket34])
         report = self.report_builder.get_report()
         self.data_source.get_ticket_changes.assert_called_once_with(self.get_last_run_time, self._start_time)
-        self.data_source.get_tickets.assert_called_once_with(23,34)
+        self.data_source.get_tickets.assert_called_once_with({23, 34})
 
 
 def _minutes_ago(minutes):

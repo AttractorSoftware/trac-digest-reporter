@@ -29,9 +29,7 @@ class DigestReportSender(Component):
         printout(self.greetings)
 
 
-
 class Report(object):
-
     def __init__(self):
         self._tickets = []
 
@@ -50,6 +48,8 @@ class ReportBuilder(object):
     def get_report(self):
         last_run_time = self._data_source.get_last_run_time()
         ticket_changes = self._data_source.get_ticket_changes(last_run_time, self._start_time)
+        tickets = set([ticket_change.ticket for ticket_change in ticket_changes])
+        self._data_source.get_tickets(tickets)
         return Report()
 
     def set_data_source(self, data_source):
